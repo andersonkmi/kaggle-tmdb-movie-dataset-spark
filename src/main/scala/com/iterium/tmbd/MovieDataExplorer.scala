@@ -8,7 +8,6 @@ object MovieDataExplorer {
 
   @transient lazy val logger = Logger.getLogger(getClass.getName)
 
-  // budget,genres,homepage,id,keywords,original_language,original_title,overview,popularity,production_companies,production_countries,release_date,revenue,runtime,spoken_languages,status,tagline,title,vote_average,vote_count
   private def getMovieSchema(colNames: List[String]): StructType = {
     val budgetField = StructField(colNames(0), LongType, nullable = false)
     val genresField = StructField(colNames(1), StringType, nullable = false)
@@ -21,6 +20,15 @@ object MovieDataExplorer {
     val popularityField = StructField(colNames(8), DoubleType, nullable = false)
     val productionCompaniesField = StructField(colNames(9), StringType, nullable = false)
     val productionCountriesField = StructField(colNames(10), StringType, nullable = false)
+    val releaseDateField = StructField(colNames(11), StringType, nullable = false)
+    val revenueField = StructField(colNames(12), LongType, nullable = false)
+    val runtimeField = StructField(colNames(13), IntegerType, nullable = false)
+    val spokenLanguagesField = StructField(colNames(14), StringType, nullable = false)
+    val statusField = StructField(colNames(15), StringType, nullable = false)
+    val taglineField = StructField(colNames(16), StringType, nullable = false)
+    val titleField = StructField(colNames(17), StringType, nullable = false)
+    val voteAvgField = StructField(colNames(18), DoubleType, nullable = false)
+    val voteCountField = StructField(colNames(19), LongType, nullable = false)
 
     val fields = List(budgetField,
       genresField,
@@ -32,7 +40,17 @@ object MovieDataExplorer {
       overviewField,
       popularityField,
       productionCompaniesField,
-      productionCountriesField)
+      productionCountriesField,
+      releaseDateField,
+      revenueField,
+      runtimeField,
+      spokenLanguagesField,
+      statusField,
+      taglineField,
+      titleField,
+      voteAvgField,
+      voteCountField
+    )
     StructType(fields)
   }
 }
