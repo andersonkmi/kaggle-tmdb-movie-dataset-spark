@@ -1,9 +1,9 @@
-package com.iterium.tmbd
+package com.iterium.tmdb
 
 import org.apache.log4j.Logger
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 object MovieDataExplorer {
 
@@ -81,7 +81,7 @@ object MovieDataExplorer {
 
   def readContents(contents: RDD[String], sparkSession: SparkSession): (List[String], DataFrame) = {
     logger.info("Reading file contents")
-    val headerColumns = contents.first().split("(?:^|,)(?=[^\"]|(\")?|({)?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)").toList
+    val headerColumns = contents.first().split("(?:^|,)(?=[^\"]|(\")?|(\\{)?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)").toList
     val schema = getMovieSchema(headerColumns)
 
     val data = contents.mapPartitionsWithIndex((i, it) => if (i == 0) it.drop(1) else it).map(_.split(",").toList).map(row)
