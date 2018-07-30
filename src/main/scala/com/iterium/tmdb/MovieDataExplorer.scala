@@ -9,27 +9,29 @@ object MovieDataExplorer {
 
   @transient lazy val logger = Logger.getLogger(getClass.getName)
 
-  private def getMovieSchema(colNames: List[String]): StructType = {
-    val budgetField =               StructField(colNames(0), LongType, nullable = false)
-    val genresField =               StructField(colNames(1), StringType, nullable = false)
-    val homepageField =             StructField(colNames(2), StringType, nullable = false)
-    val idField =                   StructField(colNames(3), IntegerType, nullable = false)
-    val keywordsField =             StructField(colNames(4), StringType, nullable = false)
-    val originalLanguageField =     StructField(colNames(5), StringType, nullable = false)
-    val originalTitleField =        StructField(colNames(6), StringType, nullable = false)
-    val overviewField =             StructField(colNames(7), StringType, nullable = false)
-    val popularityField =           StructField(colNames(8), DoubleType, nullable = false)
-    val productionCompaniesField =  StructField(colNames(9), StringType, nullable = false)
-    val productionCountriesField =  StructField(colNames(10), StringType, nullable = false)
-    val releaseDateField =          StructField(colNames(11), StringType, nullable = false)
-    val revenueField =              StructField(colNames(12), LongType, nullable = false)
-    val runtimeField =              StructField(colNames(13), IntegerType, nullable = false)
-    val spokenLanguagesField =      StructField(colNames(14), StringType, nullable = false)
-    val statusField =               StructField(colNames(15), StringType, nullable = false)
-    val taglineField =              StructField(colNames(16), StringType, nullable = false)
-    val titleField =                StructField(colNames(17), StringType, nullable = false)
-    val voteAvgField =              StructField(colNames(18), DoubleType, nullable = false)
-    val voteCountField =            StructField(colNames(19), LongType, nullable = false)
+  val DefaultColumnNames = List("budget","genres","homepage","id","keywords","original_language","original_title","overview","popularity","production_companies","production_countries","release_date","revenue","runtime","spoken_languages","status","tagline","title","vote_average","vote_count")
+
+  def getSchema(colNames: List[String]): StructType = {
+    val budgetField =               StructField(colNames(0), LongType, false)
+    val genresField =               StructField(colNames(1), StringType, false)
+    val homepageField =             StructField(colNames(2), StringType, false)
+    val idField =                   StructField(colNames(3), IntegerType, false)
+    val keywordsField =             StructField(colNames(4), StringType, false)
+    val originalLanguageField =     StructField(colNames(5), StringType, false)
+    val originalTitleField =        StructField(colNames(6), StringType, false)
+    val overviewField =             StructField(colNames(7), StringType, false)
+    val popularityField =           StructField(colNames(8), DoubleType, false)
+    val productionCompaniesField =  StructField(colNames(9), StringType, false)
+    val productionCountriesField =  StructField(colNames(10), StringType, false)
+    val releaseDateField =          StructField(colNames(11), StringType, false)
+    val revenueField =              StructField(colNames(12), LongType, false)
+    val runtimeField =              StructField(colNames(13), IntegerType, false)
+    val spokenLanguagesField =      StructField(colNames(14), StringType, false)
+    val statusField =               StructField(colNames(15), StringType, false)
+    val taglineField =              StructField(colNames(16), StringType, false)
+    val titleField =                StructField(colNames(17), StringType, false)
+    val voteAvgField =              StructField(colNames(18), DoubleType, false)
+    val voteCountField =            StructField(colNames(19), LongType, false)
 
     val fields = List(budgetField,
       genresField,
@@ -82,10 +84,14 @@ object MovieDataExplorer {
   def readContents(contents: RDD[String], sparkSession: SparkSession): (List[String], DataFrame) = {
     logger.info("Reading file contents")
     val headerColumns = contents.first().split("(?:^|,)(?=[^\"]|(\")?|(\\{)?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)").toList
-    val schema = getMovieSchema(headerColumns)
+    val schema = getSchema(headerColumns)
 
     val data = contents.mapPartitionsWithIndex((i, it) => if (i == 0) it.drop(1) else it).map(_.split(",").toList).map(row)
     val dataFrame = sparkSession.createDataFrame(data, schema)
     (headerColumns, dataFrame)
+  }
+
+  def readContents(file: String, session: SparkSession): DataFrame = {
+    session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").load(file)
   }
 }
