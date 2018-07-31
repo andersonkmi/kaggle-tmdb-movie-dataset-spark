@@ -1,6 +1,6 @@
 package com.iterium.tmdb
 
-import com.iterium.tmdb.MovieDataExplorer.readContents
+import com.iterium.tmdb.MovieDatasetHandler.{extractSingleValuedColumns, readContents}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import com.iterium.tmdb.utils.Timer.timed
@@ -13,16 +13,13 @@ object Main {
 
     val sparkSession: SparkSession = SparkSession.builder.appName("kaggle-tmdb-movie-spark").master("local[*]").getOrCreate()
 
-    val movieDF = readContents("tmdb_5000_movies.csv", sparkSession)
-    movieDF.printSchema()
-    movieDF.show(10)
+    // Loads the first data frame (movies)
+    logger.info("Loading the tmdb_5000_movies.csv file")
+    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents("tmdb_5000_movies.csv", sparkSession))
 
-    println("Rows: " + movieDF.count())
+    // Extract single valued columns
+    val singleValDF = timed("Extracting single valued columns", extractSingleValuedColumns(movieDF))
 
-    //val movieContents = sparkSession.sparkContext.textFile("tmdb_5000_movies.csv")
-    //val (headerColumns, contents) = timed("Reading file contents", MovieDataExplorer.readContents(movieContents, sparkSession))
-    //println(headerColumns)
-    //contents.cache()
-
+    // Loads the second data frame (movie credits)
   }
 }

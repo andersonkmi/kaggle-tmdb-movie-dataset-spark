@@ -5,7 +5,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
-object MovieDataExplorer {
+object MovieDatasetHandler {
 
   @transient lazy val logger = Logger.getLogger(getClass.getName)
 
@@ -57,41 +57,12 @@ object MovieDataExplorer {
     StructType(fields)
   }
 
-  private def row(line: List[String]): Row = {
-    val list = List(line.head.toLong,
-                    line(1),
-                    line(2),
-                    line(3).toInt,
-                    line(4),
-                    line(5),
-                    line(6),
-                    line(7),
-                    line(8).toDouble,
-                    line(9),
-                    line(10),
-                    line(11),
-                    line(12).toLong,
-                    line(13).toInt,
-                    line(14),
-                    line(15),
-                    line(16),
-                    line(17),
-                    line(18).toDouble,
-                    line(19).toLong)
-    Row.fromSeq(list)
-  }
-
-  def readContents(contents: RDD[String], sparkSession: SparkSession): (List[String], DataFrame) = {
-    logger.info("Reading file contents")
-    val headerColumns = contents.first().split("(?:^|,)(?=[^\"]|(\")?|(\\{)?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)").toList
-    val schema = getSchema(headerColumns)
-
-    val data = contents.mapPartitionsWithIndex((i, it) => if (i == 0) it.drop(1) else it).map(_.split(",").toList).map(row)
-    val dataFrame = sparkSession.createDataFrame(data, schema)
-    (headerColumns, dataFrame)
-  }
-
   def readContents(file: String, session: SparkSession): DataFrame = {
     session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").load(file)
+  }
+
+  def extractSingleValuedColumns(original: DataFrame): DataFrame = {
+    val selectedColumns = Seq("budget", "homepage", "id", "original_title", "popularity", "release_date", "revenue", "runtime", "status", "tagline", "title", "vote_average", "vote_count")
+    original.select(selectedColumns.head, selectedColumns.tail: _*)
   }
 }
