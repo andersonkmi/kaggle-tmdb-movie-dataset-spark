@@ -66,7 +66,11 @@ object MovieDatasetHandler {
     original.select(selectedColumns.head, selectedColumns.tail: _*)
   }
 
-  def retrieveTopMoviesByBudget(df: DataFrame): DataFrame = {
+  def getTopMoviesByBudget(df: DataFrame): DataFrame = {
     df.sort(desc("budget"))
+  }
+
+  def getTopMoviesByRevenue(df: DataFrame): DataFrame = {
+    df.sort(desc("revenue"))
   }
 }
