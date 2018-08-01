@@ -1,9 +1,9 @@
 package com.iterium.tmdb
 
 import org.apache.log4j.Logger
-import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.functions.desc
 
 object MovieDatasetHandler {
 
@@ -64,5 +64,9 @@ object MovieDatasetHandler {
   def extractSingleValuedColumns(original: DataFrame): DataFrame = {
     val selectedColumns = Seq("budget", "homepage", "id", "original_title", "popularity", "release_date", "revenue", "runtime", "status", "tagline", "title", "vote_average", "vote_count")
     original.select(selectedColumns.head, selectedColumns.tail: _*)
+  }
+
+  def retrieveTopMoviesByBudget(df: DataFrame): DataFrame = {
+    df.sort(desc("budget"))
   }
 }
