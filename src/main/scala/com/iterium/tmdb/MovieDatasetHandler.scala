@@ -12,7 +12,7 @@ object MovieDatasetHandler {
   val DefaultColumnNames = List("budget","genres","homepage","id","keywords","original_language","original_title","overview","popularity","production_companies","production_countries","release_date","revenue","runtime","spoken_languages","status","tagline","title","vote_average","vote_count")
 
   def getSchema(colNames: List[String]): StructType = {
-    val budgetField =               StructField(colNames(0), LongType, false)
+    val budgetField =               StructField(colNames(0), LongType, nullable = false)
     val genresField =               StructField(colNames(1), StringType, false)
     val homepageField =             StructField(colNames(2), StringType, false)
     val idField =                   StructField(colNames(3), IntegerType, false)
