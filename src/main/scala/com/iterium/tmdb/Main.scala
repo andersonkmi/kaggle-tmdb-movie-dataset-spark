@@ -1,6 +1,7 @@
 package com.iterium.tmdb
 
 import com.iterium.tmdb.MovieDatasetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, readContents}
+import com.iterium.tmdb.utils.DataFrameUtil.saveDataFrameToCsv
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import com.iterium.tmdb.utils.Timer.timed
@@ -23,14 +24,18 @@ object Main {
     // Extract single valued columns
     logger.info("Extracting single valued columns from the movie dataset")
     val singleValDF = timed("Extracting single valued columns", extractSingleValuedColumns(movieDF))
+    logger.info("Saving current data frame into CSV")
+    timed("Saving single values data frame to CSV", saveDataFrameToCsv(singleValDF, "single_value_df"))
 
     logger.info("Extracting top movies by budget")
     val topMoviesByBudget = timed("Extracting top movies by budget", getTopMoviesByBudget(singleValDF))
-    topMoviesByBudget.show(10)
+    logger.info("Saving movies by budget")
+    timed("Saving movies by budget", saveDataFrameToCsv(topMoviesByBudget, "sorted_movies_budget"))
 
     logger.info("Listing top movies by revenue")
     val topMoviesByRevenue = timed("Listing top movies by revenue", getTopMoviesByRevenue(singleValDF))
-    topMoviesByRevenue.show(10)
+    logger.info("Saving movies by revenue")
+    timed("Saving movies by revenue", saveDataFrameToCsv(topMoviesByRevenue, "sorted_movies_revenue"))
 
     // Loads the second data frame (movie credits)
   }
