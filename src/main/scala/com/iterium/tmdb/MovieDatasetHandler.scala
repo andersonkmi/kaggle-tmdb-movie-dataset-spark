@@ -73,4 +73,8 @@ object MovieDatasetHandler {
   def getTopMoviesByRevenue(df: DataFrame): DataFrame = {
     df.sort(desc("revenue"))
   }
+
+  def getTopMoviesByVoteAvg(df: DataFrame): DataFrame = {
+    df.sort(desc("vote_average"))
+  }
 }

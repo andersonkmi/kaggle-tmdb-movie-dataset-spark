@@ -1,6 +1,6 @@
 package com.iterium.tmdb
 
-import com.iterium.tmdb.MovieDatasetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, readContents}
+import com.iterium.tmdb.MovieDatasetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, readContents, getTopMoviesByVoteAvg}
 import com.iterium.tmdb.utils.DataFrameUtil.saveDataFrameToCsv
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
 import org.apache.log4j.Logger
@@ -37,6 +37,11 @@ object Main {
     val topMoviesByRevenue = timed("Listing top movies by revenue", getTopMoviesByRevenue(singleValDF))
     logger.info("Saving movies by revenue")
     timed("Saving movies by revenue", saveDataFrameToCsv(topMoviesByRevenue, buildFilePath("D:\\temp", "sorted_movies_revenue")))
+
+    logger.info("Listing top movies by vote average")
+    val topMoviesByVoteAvg = timed("Listing top movies by vote average", getTopMoviesByVoteAvg(singleValDF))
+    logger.info("Saving top movies by vote average")
+    timed("Saving top movies by vote average", saveDataFrameToCsv(topMoviesByVoteAvg, buildFilePath("D:\\temp", "sorted_movies_vote_avg")))
 
     // Loads the second data frame (movie credits)
   }
