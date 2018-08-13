@@ -1,5 +1,6 @@
 package com.iterium.tmdb
 
+import com.iterium.tmdb.MovieCreditDataSetHandler.sliceDataFrame
 import com.iterium.tmdb.MovieDataSetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, getTopMoviesByVoteAvg, readContents}
 import com.iterium.tmdb.utils.DataFrameUtil.saveDataFrameToCsv
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
@@ -47,5 +48,9 @@ object Main {
     logger.info("Loading tmdb_5000_credits.csv file")
     val movieCreditsDF = timed("Reading tmdb_5000_credits.csv file", MovieCreditDataSetHandler.readContents("tmdb_5000_credits.csv", sparkSession))
     movieCreditsDF.show(10)
+
+    logger.info("Slicing credit dataframe")
+    val movieCreditsSliced = timed("Slicing credit dataframe", sliceDataFrame(movieCreditsDF))
+    movieCreditsSliced.show(10)
   }
 }

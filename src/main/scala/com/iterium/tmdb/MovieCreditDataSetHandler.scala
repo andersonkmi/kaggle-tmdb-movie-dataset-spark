@@ -19,4 +19,9 @@ object MovieCreditDataSetHandler {
   def readContents(file: String, session: SparkSession): DataFrame = {
     session.read.format("com.databricks.spark.csv").schema(getSchema(ColumnNames)).option("header", "true").load(file)
   }
+
+  def sliceDataFrame(df: DataFrame): DataFrame = {
+    val selectedColumns = List("movie_id", "cast")
+    df.select(selectedColumns.head, selectedColumns.tail: _*)
+  }
 }
