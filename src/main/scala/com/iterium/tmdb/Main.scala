@@ -47,7 +47,6 @@ object Main {
     // Loads the second data frame (movie credits)
     logger.info("Loading tmdb_5000_credits.csv file")
     val movieCreditsDF = timed("Reading tmdb_5000_credits.csv file", MovieCreditDataSetHandler.readContents("tmdb_5000_credits.csv", sparkSession))
-    movieCreditsDF.show(10)
 
     logger.info("Slicing credit dataframe")
     val movieCreditsSliced = timed("Slicing credit dataframe", sliceDataFrame(movieCreditsDF))
