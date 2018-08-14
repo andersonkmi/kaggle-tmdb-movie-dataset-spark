@@ -50,6 +50,12 @@ object Main {
 
     logger.info("Slicing credit dataframe")
     val movieCreditsSliced = timed("Slicing credit dataframe", sliceDataFrame(movieCreditsDF))
-    movieCreditsSliced.show(10)
+    val columnNames = Seq("id", "cast")
+    val movieCredits = movieCreditsSliced.toDF(columnNames: _*)
+
+    // Joining data frames
+    val joinedDF = singleValDF.join(movieCredits, Seq("id"))
+    joinedDF.show(10)
+
   }
 }
