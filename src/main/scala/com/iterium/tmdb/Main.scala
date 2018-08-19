@@ -67,21 +67,20 @@ object Main {
 
     val fieldList = List(castIdField, characterField, creditIdField, genderField, idField, nameField, orderField)
     val jsonSchema = ArrayType(StructType(fieldList))
-    val df = movieCredits.select(col("id"), from_json(col("cast"), jsonSchema).alias("cast"))
-    df.printSchema()
-    df.show(20)
+    val movieCreditsMod = movieCredits.select(col("id"), from_json(col("cast"), jsonSchema).alias("cast"))
+    movieCreditsMod.printSchema()
+    movieCreditsMod.show(20)
 
 
     //val credits = MovieCreditDataSetHandler.readJsonContents("tmdb_5000_credits_modified.json", sparkSession)
     //credits.printSchema()
 
     logger.info("Converting the dataframe entirely into json")
-    timed("Persisting data frame into json", DataFrameUtil.saveDataFrameToJson(df, buildFilePath("D:\\temp", "movie_credits")))
+    timed("Persisting data frame into json", DataFrameUtil.saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
 
     // Joining data frames
-    val joinedDF = singleValDF.join(movieCredits, Seq("id"))
+    val joinedDF = singleValDF.join(movieCreditsMod, Seq("id"))
     joinedDF.show(10)
-
-
+    joinedDF.printSchema()
   }
 }
