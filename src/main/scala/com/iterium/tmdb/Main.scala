@@ -24,7 +24,7 @@ object Main {
 
     // Loads the first data frame (movies)
     logger.info("Loading the tmdb_5000_movies.csv file")
-    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents("tmdb_5000_movies.csv", sparkSession))
+    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents("tmdb_5000_movies_original.csv", sparkSession))
 
     // Extract single valued columns
     logger.info("Extracting single valued columns from the movie dataset")

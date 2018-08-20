@@ -54,7 +54,7 @@ object MovieDataSetHandler {
   }
 
   def readContents(file: String, session: SparkSession): DataFrame = {
-    session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").load(file)
+    session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
   }
 
   def extractSingleValuedColumns(original: DataFrame): DataFrame = {
