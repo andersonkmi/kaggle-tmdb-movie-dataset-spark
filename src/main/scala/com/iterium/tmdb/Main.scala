@@ -6,11 +6,10 @@ import com.iterium.tmdb.utils.DataFrameUtil
 import com.iterium.tmdb.utils.DataFrameUtil.saveDataFrameToCsv
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
 import org.apache.log4j.Logger
-import org.apache.spark.sql.{SparkSession, types}
+import org.apache.spark.sql.SparkSession
 import com.iterium.tmdb.utils.Timer.timed
 import org.apache.log4j.Level.OFF
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types._
 
 object Main {
 
