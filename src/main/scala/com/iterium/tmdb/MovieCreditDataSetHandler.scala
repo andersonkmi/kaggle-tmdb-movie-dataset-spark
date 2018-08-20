@@ -1,7 +1,7 @@
 package com.iterium.tmdb
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+import org.apache.spark.sql.types._
 
 object MovieCreditDataSetHandler {
   private val ColumnNames = List("movie_id", "title", "cast", "crew")
@@ -14,6 +14,19 @@ object MovieCreditDataSetHandler {
 
     val fields = List(movieIdField, titleField, castField, crewField)
     StructType(fields)
+  }
+
+  def getJsonSchema(): ArrayType = {
+    val castIdField = StructField("cast_id", IntegerType)
+    val characterField = StructField("character", StringType)
+    val creditIdField = StructField("credit_id", StringType)
+    val genderField = StructField("gender", IntegerType)
+    val idField = StructField("id", IntegerType)
+    val nameField = StructField("name", StringType)
+    val orderField = StructField("order", IntegerType)
+
+    val fieldList = List(castIdField, characterField, creditIdField, genderField, idField, nameField, orderField)
+    ArrayType(StructType(fieldList))
   }
 
   def readContents(file: String, session: SparkSession): DataFrame = {

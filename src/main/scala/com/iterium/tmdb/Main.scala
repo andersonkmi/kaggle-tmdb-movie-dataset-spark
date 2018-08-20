@@ -1,6 +1,6 @@
 package com.iterium.tmdb
 
-import com.iterium.tmdb.MovieCreditDataSetHandler.sliceDataFrame
+import com.iterium.tmdb.MovieCreditDataSetHandler.{getJsonSchema, sliceDataFrame}
 import com.iterium.tmdb.MovieDataSetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, getTopMoviesByVoteAvg, readContents}
 import com.iterium.tmdb.utils.DataFrameUtil
 import com.iterium.tmdb.utils.DataFrameUtil.saveDataFrameToCsv
@@ -57,17 +57,7 @@ object Main {
     val movieCredits = movieCreditsSliced.toDF(columnNames: _*)
     movieCredits.show(10)
 
-    val castIdField = StructField("cast_id", IntegerType)
-    val characterField = StructField("character", StringType)
-    val creditIdField = StructField("credit_id", StringType)
-    val genderField = StructField("gender", IntegerType)
-    val idField = StructField("id", IntegerType)
-    val nameField = StructField("name", StringType)
-    val orderField = StructField("order", IntegerType)
-
-    val fieldList = List(castIdField, characterField, creditIdField, genderField, idField, nameField, orderField)
-    val jsonSchema = ArrayType(StructType(fieldList))
-    val movieCreditsMod = movieCredits.select(col("id"), from_json(col("cast"), jsonSchema).alias("cast"))
+    val movieCreditsMod = movieCredits.select(col("id"), from_json(col("cast"), getJsonSchema()).alias("cast"))
     movieCreditsMod.printSchema()
     movieCreditsMod.show(20)
 
