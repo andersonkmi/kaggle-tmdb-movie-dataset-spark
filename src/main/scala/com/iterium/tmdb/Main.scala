@@ -60,10 +60,6 @@ object Main {
     movieCreditsMod.printSchema()
     movieCreditsMod.show(20)
 
-
-    //val credits = MovieCreditDataSetHandler.readJsonContents("tmdb_5000_credits_modified.json", sparkSession)
-    //credits.printSchema()
-
     logger.info("Converting the dataframe entirely into json")
     timed("Persisting data frame into json", DataFrameUtil.saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
 
