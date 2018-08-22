@@ -3,7 +3,7 @@ package com.iterium.tmdb
 import com.iterium.tmdb.MovieCreditDataSetHandler.{getJsonSchema, sliceDataFrame}
 import com.iterium.tmdb.MovieDataSetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, getTopMoviesByVoteAvg, readContents}
 import com.iterium.tmdb.utils.DataFrameUtil
-import com.iterium.tmdb.utils.DataFrameUtil.saveDataFrameToCsv
+import com.iterium.tmdb.utils.DataFrameUtil.{saveDataFrameToCsv, saveDataFrameToJson}
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -23,7 +23,7 @@ object Main {
 
     // Loads the first data frame (movies)
     logger.info("Loading the tmdb_5000_movies.csv file")
-    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents("tmdb_5000_movies_original.csv", sparkSession))
+    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents("tmdb_5000_movies.csv", sparkSession))
 
     // Extract single valued columns
     logger.info("Extracting single valued columns from the movie dataset")
@@ -54,18 +54,22 @@ object Main {
     val movieCreditsSliced = timed("Slicing credit dataframe", sliceDataFrame(movieCreditsDF))
     val columnNames = Seq("id", "cast")
     val movieCredits = movieCreditsSliced.toDF(columnNames: _*)
-    movieCredits.show(10)
 
     val movieCreditsMod = movieCredits.select(col("id"), from_json(col("cast"), getJsonSchema()).alias("cast"))
     movieCreditsMod.printSchema()
-    movieCreditsMod.show(20)
 
     logger.info("Converting the dataframe entirely into json")
-    timed("Persisting data frame into json", DataFrameUtil.saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
+    timed("Persisting data frame into json", saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
 
     // Joining data frames
+    logger.info("Joining movies and credits data frames")
     val joinedDF = singleValDF.join(movieCreditsMod, Seq("id"))
     joinedDF.show(10)
     joinedDF.printSchema()
+
+    logger.info("Exploding data frame")
+    val explodedDataFrame = joinedDF.withColumn("cast_member", explode(joinedDF.col("cast")))
+    val resultingDataFrame = explodedDataFrame.drop(col("cast"))
+    resultingDataFrame.show(30)
   }
 }
