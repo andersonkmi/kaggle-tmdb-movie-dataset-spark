@@ -1,7 +1,7 @@
 package com.iterium.tmdb
 
 import com.iterium.tmdb.MovieCreditDataSetHandler.{getJsonSchema, sliceDataFrame}
-import com.iterium.tmdb.MovieDataSetHandler.{extractSingleValuedColumns, getTopMoviesByBudget, getTopMoviesByRevenue, getTopMoviesByVoteAvg, readContents}
+import com.iterium.tmdb.MovieDataSetHandler._
 import com.iterium.tmdb.utils.DataFrameUtil
 import com.iterium.tmdb.utils.DataFrameUtil.{saveDataFrameToCsv, saveDataFrameToJson}
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
@@ -10,6 +10,7 @@ import org.apache.spark.sql.SparkSession
 import com.iterium.tmdb.utils.Timer.timed
 import org.apache.log4j.Level.OFF
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
 
 object Main {
 
@@ -55,21 +56,35 @@ object Main {
     val columnNames = Seq("id", "cast")
     val movieCredits = movieCreditsSliced.toDF(columnNames: _*)
 
+    // Reads an array of json elements
     val movieCreditsMod = movieCredits.select(col("id"), from_json(col("cast"), getJsonSchema()).alias("cast"))
-    movieCreditsMod.printSchema()
+    movieCreditsMod.show(20)
 
-    logger.info("Converting the dataframe entirely into json")
-    timed("Persisting data frame into json", saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
+    // explodes the json array into each movie id
+    val explodedMovieCredits = movieCreditsMod.withColumn("cast_member", explode(movieCreditsMod.col("cast"))).drop(col("cast"))
+    explodedMovieCredits.show(30)
+    explodedMovieCredits.printSchema()
+
+    val formattedMovieCredits = explodedMovieCredits.select(col("id"), col("cast_member.name").alias("name"))
+    formattedMovieCredits.show(30)
+
+    val top10MoviesByRevenue = topMoviesByRevenue.take(10)
+    val movieIds = top10MoviesByRevenue.map(item => item.get(2)).map(_.toString).map(_.toInt)
+
+    formattedMovieCredits.filter(col("id") isin (movieIds:_*)).drop("id").dropDuplicates().sort(asc("name")).show(50)
+
+    //logger.info("Converting the dataframe entirely into json")
+    //timed("Persisting data frame into json", saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
 
     // Joining data frames
-    logger.info("Joining movies and credits data frames")
-    val joinedDF = singleValDF.join(movieCreditsMod, Seq("id"))
-    joinedDF.show(10)
-    joinedDF.printSchema()
+    //logger.info("Joining movies and credits data frames")
+    //val joinedDF = singleValDF.join(movieCreditsMod, Seq("id"))
+    //joinedDF.show(10)
+    //joinedDF.printSchema()
 
-    logger.info("Exploding data frame")
-    val explodedDataFrame = joinedDF.withColumn("cast_member", explode(joinedDF.col("cast")))
-    val resultingDataFrame = explodedDataFrame.drop(col("cast"))
-    resultingDataFrame.show(30)
+    //logger.info("Exploding data frame")
+    //val explodedDataFrame = joinedDF.withColumn("cast_member", explode(joinedDF.col("cast")))
+    //val resultingDataFrame = explodedDataFrame.drop(col("cast"))
+    //resultingDataFrame.show(30)
   }
 }
