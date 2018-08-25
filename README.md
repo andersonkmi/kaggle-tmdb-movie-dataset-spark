@@ -28,11 +28,11 @@ D:\projects\kaggle-tmdb-movie-dataset-spark> sbt run --destination D:\temp
 ## Exported results
 
 After the program execution, the following folders are created:
-- single_value_df: this contains a CSV file with single values extracted from the movies data set.
-- sorted_movies_budget: contains a CSV file with movies sorted by budget.
-- sorted_movies_revenue: contains a CSV file with movies sorted by revenue.
-- sorted_movies_vote_avg: contains a CSV file with movies sorted by vote average count.
-- top10_casting_movie_revenue: contains a JSON file with casting names from top 10 movies by revenue ("most profitable casting").
+- __single_value_df__: this contains a CSV file with single values extracted from the movies data set.
+- __sorted_movies_budget__: contains a CSV file with movies sorted by budget.
+- __sorted_movies_revenue__: contains a CSV file with movies sorted by revenue.
+- __sorted_movies_vote_avg__: contains a CSV file with movies sorted by vote average count.
+- __top10_casting_movie_revenue__: contains a JSON file with casting names from top 10 movies by revenue ("most profitable casting").
 
 ## References
 
