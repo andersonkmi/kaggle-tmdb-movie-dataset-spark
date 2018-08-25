@@ -16,6 +16,35 @@ This program loads two CSV files obtained from Kaggle: **_tmdb_5000_credits.csv_
 Other challange using this data set was the mix of CSV and JSON formats and in such
 situation it required the use of some special functions to load and handle JSON data.
 
+## Build it and run it
+
+In order to build and run it, extract both CSV files from Kaggle web site (see References section below)
+and place the files in the project's root folder, then issue the command below:
+
+```
+D:\projects\kaggle-tmdb-movie-dataset-spark> sbt run --destination D:\temp
+```
+
+## Exported results
+
+After the program execution, the following folders are created:
+- single_value_df: this contains a CSV file with single values extracted from the movies data set.
+- sorted_movies_budget: contains a CSV file with movies sorted by budget.
+- sorted_movies_revenue: contains a CSV file with movies sorted by revenue.
+- sorted_movies_vote_avg: contains a CSV file with movies sorted by vote average count.
+- top10_casting_movie_revenue: contains a JSON file with casting names from top 10 movies by revenue ("most profitable casting").
+
 ## References
 
 - [TMDB 5000 Movie Dataset](https://www.kaggle.com/tmdb/tmdb-movie-metadata "TMDB 5000 Movie Dataset")
+
+## Versions
+All notable changes to this project will be documented in this section.
+
+### 1.0.0.0 (2018-08-25)
+#### Added
+- Initial version.
+#### Changed
+- NA
+#### Removed
+- NA
