@@ -19,5 +19,5 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - NA
 
-[Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.0...HEAD
+[Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.1...HEAD
 [1.0.0.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.0...v1.0.0.1
