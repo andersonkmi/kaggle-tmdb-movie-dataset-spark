@@ -2,7 +2,7 @@ package com.iterium.tmdb
 
 import com.iterium.tmdb.MovieCreditDataSetHandler.{getJsonSchema, sliceDataFrame}
 import com.iterium.tmdb.MovieDataSetHandler._
-import com.iterium.tmdb.utils.DataFrameUtil
+import com.iterium.tmdb.utils.ArgsUtil.{DestinationDir, parseArgs}
 import com.iterium.tmdb.utils.DataFrameUtil.{saveDataFrameToCsv, saveDataFrameToJson}
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
 import org.apache.log4j.Logger
@@ -10,11 +10,13 @@ import org.apache.spark.sql.SparkSession
 import com.iterium.tmdb.utils.Timer.timed
 import org.apache.log4j.Level.OFF
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
 
 object Main {
 
   def main(args: Array[String]): Unit = {
+    val arguments = parseArgs(args)
+    val destination = arguments.getOrElse(DestinationDir, ".")
+
     @transient lazy val logger = Logger.getLogger(getClass.getName)
     Logger.getLogger("org.apache").setLevel(OFF)
 
@@ -30,61 +32,52 @@ object Main {
     logger.info("Extracting single valued columns from the movie dataset")
     val singleValDF = timed("Extracting single valued columns", extractSingleValuedColumns(movieDF))
     logger.info("Saving current data frame into CSV")
-    timed("Saving single values data frame to CSV", saveDataFrameToCsv(singleValDF, buildFilePath("D:\\temp", "single_value_df")))
+    timed("Saving single values data frame to CSV", saveDataFrameToCsv(singleValDF, buildFilePath(destination, "single_value_df")))
 
     logger.info("Extracting top movies by budget")
     val topMoviesByBudget = timed("Extracting top movies by budget", getTopMoviesByBudget(singleValDF))
     logger.info("Saving movies by budget")
-    timed("Saving movies by budget", saveDataFrameToCsv(topMoviesByBudget, buildFilePath("D:\\temp", "sorted_movies_budget")))
+    timed("Saving movies by budget", saveDataFrameToCsv(topMoviesByBudget, buildFilePath(destination, "sorted_movies_budget")))
 
     logger.info("Listing top movies by revenue")
     val topMoviesByRevenue = timed("Listing top movies by revenue", getTopMoviesByRevenue(singleValDF))
     logger.info("Saving movies by revenue")
-    timed("Saving movies by revenue", saveDataFrameToCsv(topMoviesByRevenue, buildFilePath("D:\\temp", "sorted_movies_revenue")))
+    timed("Saving movies by revenue", saveDataFrameToCsv(topMoviesByRevenue, buildFilePath(destination, "sorted_movies_revenue")))
 
     logger.info("Listing top movies by vote average")
     val topMoviesByVoteAvg = timed("Listing top movies by vote average", getTopMoviesByVoteAvg(singleValDF))
     logger.info("Saving top movies by vote average")
-    timed("Saving top movies by vote average", saveDataFrameToCsv(topMoviesByVoteAvg, buildFilePath("D:\\temp", "sorted_movies_vote_avg")))
+    timed("Saving top movies by vote average", saveDataFrameToCsv(topMoviesByVoteAvg, buildFilePath(destination, "sorted_movies_vote_avg")))
 
     // Loads the second data frame (movie credits)
     logger.info("Loading tmdb_5000_credits.csv file")
     val movieCreditsDF = timed("Reading tmdb_5000_credits.csv file", MovieCreditDataSetHandler.readContents("tmdb_5000_credits.csv", sparkSession))
 
-    logger.info("Slicing credit dataframe")
-    val movieCreditsSliced = timed("Slicing credit dataframe", sliceDataFrame(movieCreditsDF))
+    logger.info("Slicing credit data frame")
+    val movieCreditsSliced = timed("Slicing credit data frame", sliceDataFrame(movieCreditsDF))
     val columnNames = Seq("id", "cast")
     val movieCredits = movieCreditsSliced.toDF(columnNames: _*)
 
     // Reads an array of json elements
-    val movieCreditsMod = movieCredits.select(col("id"), from_json(col("cast"), getJsonSchema()).alias("cast"))
-    movieCreditsMod.show(20)
+    logger.info("Converting string into json data struct type")
+    val movieCreditsMod = timed("Converting string into json data struct type", movieCredits.select(col("id"), from_json(col("cast"), getJsonSchema()).alias("cast")))
 
     // explodes the json array into each movie id
-    val explodedMovieCredits = movieCreditsMod.withColumn("cast_member", explode(movieCreditsMod.col("cast"))).drop(col("cast"))
-    explodedMovieCredits.show(30)
-    explodedMovieCredits.printSchema()
+    logger.info("Explodes the nested json cast member list")
+    val explodedMovieCredits = timed("Explodes the nested json cast member list", movieCreditsMod.withColumn("cast_member", explode(movieCreditsMod.col("cast"))).drop(col("cast")))
 
-    val formattedMovieCredits = explodedMovieCredits.select(col("id"), col("cast_member.name").alias("name"))
-    formattedMovieCredits.show(30)
+    // Selects the movie id and the cast members names
+    logger.info("Selects the movie id and the cast members names")
+    val formattedMovieCredits = timed("Selects the movie id and the cast members names", explodedMovieCredits.select(col("id"), col("cast_member.name").alias("name")))
 
-    val top10MoviesByRevenue = topMoviesByRevenue.take(10)
+    // Takes the top 10 movies by revenue
+    logger.info("Takes the top 10 movies by revenue and retrieves the movie ids")
+    val top10MoviesByRevenue = timed("Takes the top 10 movies by revenue", topMoviesByRevenue.take(10))
     val movieIds = top10MoviesByRevenue.map(item => item.get(2)).map(_.toString).map(_.toInt)
 
-    formattedMovieCredits.filter(col("id") isin (movieIds:_*)).drop("id").dropDuplicates().sort(asc("name")).show(50)
-
-    //logger.info("Converting the dataframe entirely into json")
-    //timed("Persisting data frame into json", saveDataFrameToJson(movieCreditsMod, buildFilePath("D:\\temp", "movie_credits")))
-
-    // Joining data frames
-    //logger.info("Joining movies and credits data frames")
-    //val joinedDF = singleValDF.join(movieCreditsMod, Seq("id"))
-    //joinedDF.show(10)
-    //joinedDF.printSchema()
-
-    //logger.info("Exploding data frame")
-    //val explodedDataFrame = joinedDF.withColumn("cast_member", explode(joinedDF.col("cast")))
-    //val resultingDataFrame = explodedDataFrame.drop(col("cast"))
-    //resultingDataFrame.show(30)
+    // Lists the cast names associated with the top 10 movies by revenue
+    val top10CastingByMovieRevenue = timed("Lists the cast names associated with the top 10 movies by revenue", formattedMovieCredits.filter(col("id") isin (movieIds:_*)).drop("id").dropDuplicates().sort(asc("name")))
+    logger.info("Saving top 10 casting by revenue to json")
+    timed("Saving top 10 casting by revenue tp json", saveDataFrameToJson(top10CastingByMovieRevenue, buildFilePath(destination, "top10_casting_movie_revenue")))
   }
 }
