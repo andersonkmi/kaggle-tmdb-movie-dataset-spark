@@ -37,14 +37,3 @@ After the program execution, the following folders are created:
 ## References
 
 - [TMDB 5000 Movie Dataset](https://www.kaggle.com/tmdb/tmdb-movie-metadata "TMDB 5000 Movie Dataset")
-
-## Versions
-All notable changes to this project will be documented in this section.
-
-### 1.0.0.0 (2018-08-25)
-#### Added
-- Initial version.
-#### Changed
-- NA
-#### Removed
-- NA
