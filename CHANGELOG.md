@@ -1,23 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v1.0.1.0]
+- Refactorings applied to extract the dataframe read method
+- Included argument for the CSV input folder
 
-## [1.0.0.1] - 2018-08-25
-### Added
-- NA
-### Changed
+## [v1.0.0.1]
 - Changelog links for version comparison
-### Removed
-- NA
 
-## 1.0.0.0 - 2018-08-25
-### Added
+## 1.0.0.0
 - Initial version.
-### Changed
-- NA
-### Removed
-- NA
 
 [Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.1...HEAD
-[1.0.0.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.0...v1.0.0.1
+[v1.0.1.0]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.1...v1.0.1.0
+[v1.0.0.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.0...v1.0.0.1

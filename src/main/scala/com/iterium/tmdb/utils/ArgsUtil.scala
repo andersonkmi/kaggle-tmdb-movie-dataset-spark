@@ -4,6 +4,7 @@ import scala.collection.mutable
 
 object ArgsUtil {
   val DestinationDir = "--destination"
+  val SourceDir = "--source"
 
   def parseArgs(args: Array[String]): Map[String, String] = {
     val result = mutable.Map[String, String]()
