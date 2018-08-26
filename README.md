@@ -22,8 +22,11 @@ In order to build and run it, extract both CSV files from Kaggle web site (see R
 and place the files in the project's root folder, then issue the command below:
 
 ```
-D:\projects\kaggle-tmdb-movie-dataset-spark> sbt run --destination D:\temp
+D:\projects\kaggle-tmdb-movie-dataset-spark> sbt run --source D:\csv --destination D:\temp
 ```
+where:
+- --source is the folder where the CSV files are located.
+- --destination is the folder where the generated filed will be persisted.
 
 ## Exported results
 
