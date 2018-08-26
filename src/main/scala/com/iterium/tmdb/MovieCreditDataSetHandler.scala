@@ -3,10 +3,10 @@ package com.iterium.tmdb
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.types._
 
-object MovieCreditDataSetHandler {
-  private val ColumnNames = List("movie_id", "title", "cast", "crew")
+object MovieCreditDataSetHandler extends BaseDataSetHandler {
+  override val ColumnNames = List("movie_id", "title", "cast", "crew")
 
-  private def getSchema(colNames: List[String]): StructType = {
+  override def getSchema(colNames: List[String]): StructType = {
     val movieIdField  = StructField(colNames(0), IntegerType, nullable = false)
     val titleField    = StructField(colNames(1), StringType, nullable = false)
     val castField     = StructField(colNames(2), StringType, nullable = false)
@@ -16,7 +16,7 @@ object MovieCreditDataSetHandler {
     StructType(fields)
   }
 
-  def getJsonSchema(): ArrayType = {
+  def getJsonSchema: ArrayType = {
     val castIdField = StructField("cast_id", IntegerType)
     val characterField = StructField("character", StringType)
     val creditIdField = StructField("credit_id", StringType)
@@ -29,9 +29,9 @@ object MovieCreditDataSetHandler {
     ArrayType(StructType(fieldList))
   }
 
-  def readContents(file: String, session: SparkSession): DataFrame = {
-    session.read.format("com.databricks.spark.csv").schema(getSchema(ColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
-  }
+  //def readContents(file: String, session: SparkSession): DataFrame = {
+  //  session.read.format("com.databricks.spark.csv").schema(getSchema(ColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
+  //}
 
   def sliceDataFrame(df: DataFrame): DataFrame = {
     val selectedColumns = List("movie_id", "cast")

@@ -4,10 +4,10 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.desc
 
-object MovieDataSetHandler {
-  val DefaultColumnNames = List("budget","genres","homepage","id","keywords","original_language","original_title","overview","popularity","production_companies","production_countries","release_date","revenue","runtime","spoken_languages","status","tagline","title","vote_average","vote_count")
+object MovieDataSetHandler extends BaseDataSetHandler {
+  override val ColumnNames = List("budget","genres","homepage","id","keywords","original_language","original_title","overview","popularity","production_companies","production_countries","release_date","revenue","runtime","spoken_languages","status","tagline","title","vote_average","vote_count")
 
-  private def getSchema(colNames: List[String]): StructType = {
+  override def getSchema(colNames: List[String]): StructType = {
     val budgetField =               StructField(colNames(0), LongType, nullable = false)
     val genresField =               StructField(colNames(1), StringType, false)
     val homepageField =             StructField(colNames(2), StringType, false)
@@ -53,9 +53,9 @@ object MovieDataSetHandler {
     StructType(fields)
   }
 
-  def readContents(file: String, session: SparkSession): DataFrame = {
-    session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
-  }
+  //def readContents(file: String, session: SparkSession): DataFrame = {
+  //  session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
+  //}
 
   def extractSingleValuedColumns(original: DataFrame): DataFrame = {
     val selectedColumns = Seq("budget", "homepage", "id", "original_title", "popularity", "release_date", "revenue", "runtime", "status", "tagline", "title", "vote_average", "vote_count")
