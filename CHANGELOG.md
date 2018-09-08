@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.0.2.2]
+### Changed
+- README.md references CHANGELOG.md file for easier access
+
 ## [v1.0.2.1]
 ### Added
 - Travis CI support
@@ -25,7 +29,8 @@ using command-line arguments
 ### Added
 - Initial version.
 
-[Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.1...HEAD
+[Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.2...HEAD
+[v1.0.2.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.1...v1.0.2.2
 [v1.0.2.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.0...v1.0.2.1
 [v1.0.2.0]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.1.0...v1.0.2.0
 [v1.0.1.0]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.1...v1.0.1.0

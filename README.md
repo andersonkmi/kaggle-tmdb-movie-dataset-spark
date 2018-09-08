@@ -41,6 +41,7 @@ After the program execution, the following folders are created:
 
 ## Changelog
 All modifications developed for this project are listed on [CHANGELOG.md](CHANGELOG.md)
+
 ## References
 
 - [TMDB 5000 Movie Dataset](https://www.kaggle.com/tmdb/tmdb-movie-metadata "TMDB 5000 Movie Dataset")
