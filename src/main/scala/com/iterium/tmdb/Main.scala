@@ -2,12 +2,14 @@ package com.iterium.tmdb
 
 import com.iterium.tmdb.MovieCreditDataSetHandler.{getJsonSchema, sliceDataFrame}
 import com.iterium.tmdb.MovieDataSetHandler._
-import com.iterium.tmdb.utils.ArgsUtil.{DestinationDir, SourceDir, parseArgs}
+import com.iterium.tmdb.utils.AWSS3Util._
+import com.iterium.tmdb.utils.ArgsUtil._
 import com.iterium.tmdb.utils.DataFrameUtil.{saveDataFrameToCsv, saveDataFrameToJson}
 import com.iterium.tmdb.utils.FileUtils.buildFilePath
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import com.iterium.tmdb.utils.Timer.{timed, timing}
+import com.iterium.tmdb.utils.ZipUtils.unZipIt
 import org.apache.log4j.Level.OFF
 import org.apache.spark.sql.functions._
 
@@ -17,17 +19,27 @@ object Main {
     val arguments = parseArgs(args)
     val destination = arguments.getOrElse(DestinationDir, ".")
     val source = arguments.getOrElse(SourceDir, ".")
+    val s3SourceBucket = arguments.getOrElse(S3SourceBucket, "none")
+    val s3SourceKey = arguments.getOrElse(S3SourceKey, "")
 
     @transient lazy val logger = Logger.getLogger(getClass.getName)
     Logger.getLogger("org.apache").setLevel(OFF)
 
     logger.info("Processing Kaggle TMDB movie data information")
 
+    println(s3SourceBucket)
+    // Downloads and unzips source file from S3
+    if(!s3SourceBucket.equalsIgnoreCase("none")) {
+      logger.info("Downloading zip file from S3")
+      downloadObject(s3SourceBucket, s3SourceKey, source)
+      unZipIt(s"$source/$CSVZipFileName", source)
+    }
+
     val sparkSession: SparkSession = SparkSession.builder.appName("kaggle-tmdb-movie-spark").master("local[*]").getOrCreate()
 
     // Loads the first data frame (movies)
     logger.info("Loading the tmdb_5000_movies.csv file")
-    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents(buildFilePath(source, "tmdb_5000_movies.csv"), sparkSession))
+    val movieDF = timed("Reading tmdb_5000_movies.csv file", readContents(buildFilePath(source, TmdbMoviesFileName), sparkSession))
 
     // Extract single valued columns
     logger.info("Extracting single valued columns from the movie dataset")
@@ -52,7 +64,7 @@ object Main {
 
     // Loads the second data frame (movie credits)
     logger.info("Loading tmdb_5000_credits.csv file")
-    val movieCreditsDF = timed("Reading tmdb_5000_credits.csv file", MovieCreditDataSetHandler.readContents(buildFilePath(source, "tmdb_5000_credits.csv"), sparkSession))
+    val movieCreditsDF = timed("Reading tmdb_5000_credits.csv file", MovieCreditDataSetHandler.readContents(buildFilePath(source, TmdbCreditsFileName), sparkSession))
 
     logger.info("Slicing credit data frame")
     val movieCreditsSliced = timed("Slicing credit data frame", sliceDataFrame(movieCreditsDF))
