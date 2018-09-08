@@ -1,4 +1,4 @@
-# Kaggle TMDB Movie data exploration in Spark [![Build Status](https://travis-ci.org/andersonkmi/kaggle-tmbp-movie-dataset-spark.svg?branch=master)](https://travis-ci.org/andersonkmi/kaggle-tmdb-movie-dataset-spark)
+# Kaggle TMDB Movie data exploration in Spark [![Build Status](https://travis-ci.org/andersonkmi/kaggle-tmdb-movie-dataset-spark.svg?branch=master)](https://travis-ci.org/andersonkmi/kaggle-tmdb-movie-dataset-spark)
 Spark program for processing data from the TMDB dataset in Scala.
 
 ## Introduction
