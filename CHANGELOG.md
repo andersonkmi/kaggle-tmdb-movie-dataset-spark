@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.2.1]
+- Travis CI support
+
 ## [v1.0.2.0]
 - Optionally the original zip file containing the data sets can be downloaded from a S3 bucket 
 using command-line arguments
