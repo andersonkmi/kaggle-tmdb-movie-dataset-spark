@@ -39,6 +39,9 @@ After the program execution, the following folders are created:
 - __sorted_movies_vote_avg__: contains a CSV file with movies sorted by vote average count.
 - __top10_casting_movie_revenue__: contains a JSON file with casting names from top 10 movies by revenue ("most profitable casting").
 
+## Changelog
+All modifications developed for this project are listed on [CHANGELOG.md](CHANGELOG.md)
+
 ## References
 
 - [TMDB 5000 Movie Dataset](https://www.kaggle.com/tmdb/tmdb-movie-metadata "TMDB 5000 Movie Dataset")
