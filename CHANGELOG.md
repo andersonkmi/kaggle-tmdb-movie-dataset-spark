@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.2.0]
+- Optionally the original zip file containing the data sets can be downloaded from a S3 bucket 
+using command-line arguments
+
 ## [v1.0.1.0]
 - Refactorings applied to extract the dataframe read method
 - Included argument for the CSV input folder
@@ -12,5 +16,6 @@ All notable changes to this project will be documented in this file.
 - Initial version.
 
 [Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.1...HEAD
+[v1.0.2.0]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.1.0...v1.0.2.0
 [v1.0.1.0]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.1...v1.0.1.0
 [v1.0.0.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.0.0...v1.0.0.1

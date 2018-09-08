@@ -22,11 +22,13 @@ In order to build and run it, extract both CSV files from Kaggle web site (see R
 and place the files in the project's root folder, then issue the command below:
 
 ```
-D:\projects\kaggle-tmdb-movie-dataset-spark> sbt run --source D:\csv --destination D:\temp
+$ sbt run "--s3-source-bucket s3-bucket-here --s3-source-key prefix/tmdb-5000-movie-dataset.zip --source /tmp/csv --destination /temp"
 ```
 where:
 - --source is the folder where the CSV files are located.
 - --destination is the folder where the generated filed will be persisted.
+- --s3-source-bucket is the bucket where your file is located.
+- --s3-source-key is the zip file key name.
 
 ## Exported results
 
