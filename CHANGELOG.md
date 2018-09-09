@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.0.2.3]
+### Added
+- Few extra logs for S3 download and zip uncompressing.
+
+### Removed
+- Commented code.
+
 ## [v1.0.2.2]
 ### Changed
 - README.md references CHANGELOG.md file for easier access
@@ -29,7 +36,8 @@ using command-line arguments
 ### Added
 - Initial version.
 
-[Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.2...HEAD
+[Unreleased]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.3...HEAD
+[v1.0.2.3]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.2...v1.0.2.3
 [v1.0.2.2]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.1...v1.0.2.2
 [v1.0.2.1]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.2.0...v1.0.2.1
 [v1.0.2.0]: https://github.com/andersonkmi/kaggle-tmdb-movie-dataset-spark/compare/v1.0.1.0...v1.0.2.0
