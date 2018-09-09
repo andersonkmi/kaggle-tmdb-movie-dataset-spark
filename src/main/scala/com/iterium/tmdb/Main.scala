@@ -27,12 +27,13 @@ object Main {
 
     logger.info("Processing Kaggle TMDB movie data information")
 
-    println(s3SourceBucket)
     // Downloads and unzips source file from S3
     if(!s3SourceBucket.equalsIgnoreCase("none")) {
       logger.info("Downloading zip file from S3")
-      downloadObject(s3SourceBucket, s3SourceKey, source)
-      unZipIt(s"$source/$CSVZipFileName", source)
+      timed("Downloading zip file from S3", downloadObject(s3SourceBucket, s3SourceKey, source))
+
+      logger.info("Uncompressing zip file")
+      timed("Uncompressing zip file", unZipIt(s"$source/$CSVZipFileName", source))
     }
 
     val sparkSession: SparkSession = SparkSession.builder.appName("kaggle-tmdb-movie-spark").master("local[*]").getOrCreate()
