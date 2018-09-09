@@ -53,10 +53,6 @@ object MovieDataSetHandler extends BaseDataSetHandler {
     StructType(fields)
   }
 
-  //def readContents(file: String, session: SparkSession): DataFrame = {
-  //  session.read.format("com.databricks.spark.csv").schema(getSchema(DefaultColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
-  //}
-
   def extractSingleValuedColumns(original: DataFrame): DataFrame = {
     val selectedColumns = Seq("budget", "homepage", "id", "original_title", "popularity", "release_date", "revenue", "runtime", "status", "tagline", "title", "vote_average", "vote_count")
     original.select(selectedColumns.head, selectedColumns.tail: _*)

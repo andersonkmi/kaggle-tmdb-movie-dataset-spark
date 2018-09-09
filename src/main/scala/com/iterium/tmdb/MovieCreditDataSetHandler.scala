@@ -29,10 +29,6 @@ object MovieCreditDataSetHandler extends BaseDataSetHandler {
     ArrayType(StructType(fieldList))
   }
 
-  //def readContents(file: String, session: SparkSession): DataFrame = {
-  //  session.read.format("com.databricks.spark.csv").schema(getSchema(ColumnNames)).option("header", "true").option("quote", "\"").option("escape", "\"").load(file)
-  //}
-
   def sliceDataFrame(df: DataFrame): DataFrame = {
     val selectedColumns = List("movie_id", "cast")
     df.select(selectedColumns.head, selectedColumns.tail: _*)
