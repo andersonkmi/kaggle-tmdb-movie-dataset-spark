@@ -4,7 +4,7 @@ organization := "org.sharpsw.spark"
 
 name := "kaggle-tmdb-movie-dataset-spark"
 
-val appVersion = "1.0.3"
+val appVersion = "1.1.1"
 
 val appName = "kaggle-tmdb-movie-dataset-spark"
 

@@ -4,6 +4,8 @@ import org.apache.log4j.Level.OFF
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{asc, col, explode, from_json}
+import org.codecraftlabs.kaggle.tmdb.MovieDataSetHandler._
+import org.codecraftlabs.kaggle.tmdb.MovieCreditDataSetHandler.{CSVZipFileName, TmdbCreditsFileName, TmdbMoviesFileName}
 import org.codecraftlabs.spark.utils.AWSS3Utils.downloadObject
 import org.codecraftlabs.spark.utils.ArgsUtils.parseArgs
 import org.codecraftlabs.spark.utils.DataUtils.{saveDataFrameToCsv, saveDataFrameToJson}
@@ -70,13 +72,13 @@ object Main {
     val movieCreditsDF = timed("Reading tmdb_5000_credits.csv file", MovieCreditDataSetHandler.readContents(buildFilePath(source, TmdbCreditsFileName), sparkSession))
 
     logger.info("Slicing credit data frame")
-    val movieCreditsSliced = timed("Slicing credit data frame", sliceDataFrame(movieCreditsDF))
+    val movieCreditsSliced = timed("Slicing credit data frame", MovieCreditDataSetHandler.sliceDataFrame(movieCreditsDF))
     val columnNames = Seq("id", "cast")
     val movieCredits = movieCreditsSliced.toDF(columnNames: _*)
 
     // Reads an array of json elements
     logger.info("Converting string into json data struct type")
-    val movieCreditsMod = timed("Converting string into json data struct type", movieCredits.select(col("id"), from_json(col("cast"), getJsonSchema).alias("cast")))
+    val movieCreditsMod = timed("Converting string into json data struct type", movieCredits.select(col("id"), from_json(col("cast"), MovieCreditDataSetHandler.getJsonSchema).alias("cast")))
 
     // explodes the json array into each movie id
     logger.info("Explodes the nested json cast member list")
