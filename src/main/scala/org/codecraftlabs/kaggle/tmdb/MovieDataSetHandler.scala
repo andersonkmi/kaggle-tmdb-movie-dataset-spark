@@ -1,8 +1,8 @@
-package com.iterium.tmdb
+package org.codecraftlabs.kaggle.tmdb
 
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.desc
+import org.apache.spark.sql.types._
 
 object MovieDataSetHandler extends BaseDataSetHandler {
   override val ColumnNames = List("budget","genres","homepage","id","keywords","original_language","original_title","overview","popularity","production_companies","production_countries","release_date","revenue","runtime","spoken_languages","status","tagline","title","vote_average","vote_count")

@@ -1,19 +1,21 @@
-package com.iterium.tmdb
+package org.codecraftlabs.kaggle.tmdb
 
-import com.iterium.tmdb.MovieCreditDataSetHandler.{getJsonSchema, sliceDataFrame}
-import com.iterium.tmdb.MovieDataSetHandler._
-import com.iterium.tmdb.utils.AWSS3Util._
-import com.iterium.tmdb.utils.ArgsUtil._
-import com.iterium.tmdb.utils.DataFrameUtil.{saveDataFrameToCsv, saveDataFrameToJson}
-import com.iterium.tmdb.utils.FileUtils.buildFilePath
+import org.apache.log4j.Level.OFF
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
-import com.iterium.tmdb.utils.Timer.{timed, timing}
-import com.iterium.tmdb.utils.ZipUtils.unZipIt
-import org.apache.log4j.Level.OFF
-import org.apache.spark.sql.functions._
+import org.apache.spark.sql.functions.{asc, col, explode, from_json}
+import org.codecraftlabs.spark.utils.AWSS3Utils.downloadObject
+import org.codecraftlabs.spark.utils.ArgsUtils.parseArgs
+import org.codecraftlabs.spark.utils.DataUtils.{saveDataFrameToCsv, saveDataFrameToJson}
+import org.codecraftlabs.spark.utils.FileUtil.buildFilePath
+import org.codecraftlabs.spark.utils.Timer.{timed, timing}
+import org.codecraftlabs.spark.utils.ZipUtils.unZipIt
 
 object Main {
+  private val DestinationDir: String = "--destination"
+  private val SourceDir: String = "--source"
+  private val S3SourceBucket: String = "--s3-source-bucket"
+  private val S3SourceKey: String = "--s3-source-key"
 
   def main(args: Array[String]): Unit = {
     val arguments = parseArgs(args)
@@ -46,22 +48,22 @@ object Main {
     logger.info("Extracting single valued columns from the movie dataset")
     val singleValDF = timed("Extracting single valued columns", extractSingleValuedColumns(movieDF))
     logger.info("Saving current data frame into CSV")
-    timed("Saving single values data frame to CSV", saveDataFrameToCsv(singleValDF, buildFilePath(destination, "single_value_df")))
+    timed("Saving single values data frame to CSV", saveDataFrameToCsv(singleValDF, 1, buildFilePath(destination, "single_value_df")))
 
     logger.info("Extracting top movies by budget")
     val topMoviesByBudget = timed("Extracting top movies by budget", getTopMoviesByBudget(singleValDF))
     logger.info("Saving movies by budget")
-    timed("Saving movies by budget", saveDataFrameToCsv(topMoviesByBudget, buildFilePath(destination, "sorted_movies_budget")))
+    timed("Saving movies by budget", saveDataFrameToCsv(topMoviesByBudget, 1, buildFilePath(destination, "sorted_movies_budget")))
 
     logger.info("Listing top movies by revenue")
     val topMoviesByRevenue = timed("Listing top movies by revenue", getTopMoviesByRevenue(singleValDF))
     logger.info("Saving movies by revenue")
-    timed("Saving movies by revenue", saveDataFrameToCsv(topMoviesByRevenue, buildFilePath(destination, "sorted_movies_revenue")))
+    timed("Saving movies by revenue", saveDataFrameToCsv(topMoviesByRevenue, 1, buildFilePath(destination, "sorted_movies_revenue")))
 
     logger.info("Listing top movies by vote average")
     val topMoviesByVoteAvg = timed("Listing top movies by vote average", getTopMoviesByVoteAvg(singleValDF))
     logger.info("Saving top movies by vote average")
-    timed("Saving top movies by vote average", saveDataFrameToCsv(topMoviesByVoteAvg, buildFilePath(destination, "sorted_movies_vote_avg")))
+    timed("Saving top movies by vote average", saveDataFrameToCsv(topMoviesByVoteAvg, 1, buildFilePath(destination, "sorted_movies_vote_avg")))
 
     // Loads the second data frame (movie credits)
     logger.info("Loading tmdb_5000_credits.csv file")

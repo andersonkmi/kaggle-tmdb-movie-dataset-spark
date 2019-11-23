@@ -1,4 +1,4 @@
-package com.iterium.tmdb
+package org.codecraftlabs.kaggle.tmdb
 
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, SparkSession}

@@ -1,7 +1,7 @@
-package com.iterium.tmdb
+package org.codecraftlabs.kaggle.tmdb
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object MovieCreditDataSetHandler extends BaseDataSetHandler {
   override val ColumnNames = List("movie_id", "title", "cast", "crew")
