@@ -6,7 +6,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{asc, col, explode, from_json}
 import org.codecraftlabs.kaggle.tmdb.MovieDataSetHandler._
 import org.codecraftlabs.kaggle.tmdb.MovieCreditDataSetHandler.{CSVZipFileName, TmdbCreditsFileName, TmdbMoviesFileName}
-import org.codecraftlabs.spark.utils.AWSS3Utils.downloadObject
+import org.codecraftlabs.aws.S3Util.downloadObject
 import org.codecraftlabs.spark.utils.ArgsUtils.parseArgs
 import org.codecraftlabs.spark.utils.DataUtils.{saveDataFrameToCsv, saveDataFrameToJson}
 import org.codecraftlabs.spark.utils.FileUtil.buildFilePath
